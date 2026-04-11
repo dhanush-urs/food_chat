@@ -9,16 +9,50 @@
 
 ---
 
-## 📋 Project Overview
+## 🚀 Getting Started
 
-FoodFlow Support Bot is a full-stack chatbot inspired by Swiggy/Zomato support flows. It handles:
-- **Real-time order tracking** via Firebase Firestore
-- **Instant FAQ answers** via an intelligent matching engine (115+ entries)
-- **AI-assisted fallback** via Google Gemini when neither Firebase nor FAQ can answer
+### 1. Prerequisites
+- Python 3.9+
+- Firebase Service Account Key (`backend/firebase-service-account.json`)
+- Google Gemini API Key (set in `backend/.env`)
+
+### 2. Fast Setup (Single Server)
+The backend now serves the frontend directly. You only need to run one command:
+```bash
+# Navigate to backend
+cd backend
+# Install dependencies
+pip install -r requirements.txt
+# Start the server (Accessible at http://localhost:8008)
+python main.py
+```
+
+### 3. Public Demo & Tunneling (ngrok)
+To demo the bot on a mobile device or share it externally:
+
+1. **Start the backend** (ensuring it listens on `0.0.0.0`):
+   ```bash
+   uvicorn main:app --host 0.0.0.0 --port 8008 --reload
+   ```
+2. **Start ngrok tunnel**:
+   ```bash
+   ngrok http 8008
+   ```
+3. **Access the App**:
+   - Open the **Forwarding URL** (e.g., `https://xyz.ngrok-free.app`) on your phone.
+   - The UI will automatically detect the ngrok host and connect to the API.
 
 ---
 
-## ✨ Feature List
+## 📱 Mobile Responsiveness
+The UI is fully optimized for:
+- **Mobile Phones**: Stacking layout, full-width bubbles, and touch-friendly buttons.
+- **Tablets**: Fluid container widths and optimized item cards.
+- **Laptops/Desktops**: Large-screen glassmorphism design.
+
+---
+
+## 📋 Feature List
 
 | Feature | Description |
 |---|---|
@@ -44,15 +78,6 @@ FoodFlow Support Bot is a full-stack chatbot inspired by Swiggy/Zomato support f
 
 ## 🏗️ Architecture Flow
 
-```
-User Message
-      │
-      ▼
-┌─────────────────────────┐
-│   Intent Detection      │  ← regex patterns
-└─────────────┬───────────┘
-              │ 
-     ┌────────┴────────┐
  1. Operational Intent (Place Order, Cancel, Refund, Address change, Ticket)
       │↳ Execute actions and return structured data (order_created, refund_requested, etc.)
       │
@@ -127,7 +152,7 @@ cp backend/.env.example backend/.env
 
 ```bash
 cd backend
-uvicorn main:app --reload --port 8000
+uvicorn main:app --reload --port 8008
 ```
 
 ### 6. Open the frontend
@@ -158,7 +183,7 @@ FIREBASE_SERVICE_ACCOUNT_PATH=backend/firebase-service-account.json
 
 7. Seed demo data by clicking **🌱 Seed Data** in the UI or:
 ```bash
-curl -X POST http://localhost:8000/api/seed-data
+curl -X POST http://localhost:8008/api/seed-data
 ```
 
 > **No Firebase?** The bot still works — FAQ and Gemini responses are unaffected.
@@ -254,7 +279,7 @@ Validates a provided discount code via backend logic.
 ### `GET /api/debug/faq-match?query=...`
 Returns FAQ matching debug info — scores for all candidates.
 ```bash
-curl "http://localhost:8000/api/debug/faq-match?query=refund+policy"
+curl "http://localhost:8008/api/debug/faq-match?query=refund+policy"
 ```
 
 ---
