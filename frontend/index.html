@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="FoodFlow Support Bot — AI-powered smart support for orders, deliveries, and FAQs. Get real-time order tracking and instant answers." />
+  <title>FoodFlow Support Bot</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ── Background decorative blobs ── -->
+  <div class="bg-blob blob-1" aria-hidden="true"></div>
+  <div class="bg-blob blob-2" aria-hidden="true"></div>
+
+  <!-- ── App wrapper ── -->
+  <div class="app-wrapper">
+
+    <!-- ── Chat container ── -->
+    <div class="chat-container" role="main" aria-label="FoodFlow Support Bot">
+
+      <!-- Header -->
+      <header class="chat-header">
+        <div class="header-left">
+          <div class="logo-icon" aria-hidden="true">🍔</div>
+          <div class="header-text">
+            <h1 class="header-title">FoodFlow Support Bot</h1>
+            <p class="header-subtitle">Smart support for orders, deliveries &amp; FAQs</p>
+          </div>
+        </div>
+        <div class="header-right">
+          <div class="status-dot" id="statusDot" aria-label="Status: Online"></div>
+          <span class="status-label" id="statusLabel">Online</span>
+        </div>
+      </header>
+
+      <!-- User selector (demo) -->
+      <div class="user-bar">
+        <label for="userSelect" class="user-label">Demo user:</label>
+        <select id="userSelect" class="user-select" aria-label="Select demo user">
+          <option value="user_001">👤 Aryan Sharma (user_001)</option>
+          <option value="user_002">👤 Priya Nair (user_002)</option>
+          <option value="user_003">👤 Rohan Mehta (user_003)</option>
+        </select>
+        <button class="seed-btn" id="seedBtn" title="Seed demo data into Firebase" aria-label="Seed demo data">
+          🌱 Seed Data
+        </button>
+      </div>
+
+      <!-- Messages area -->
+      <div class="messages-area" id="messagesArea" role="log" aria-live="polite" aria-label="Chat messages">
+        <!-- Welcome message injected by JS -->
+      </div>
+
+      <!-- Quick action chips -->
+      <div class="chips-row" id="chipsRow" role="toolbar" aria-label="Quick actions">
+        <button class="chip" data-msg="Track my order" id="chipTrack">🚴 Track Order</button>
+        <button class="chip" data-msg="Show my order history" id="chipHistory">📦 Order History</button>
+        <button class="chip" data-msg="What is the refund policy?" id="chipRefund">💸 Refund Policy</button>
+        <button class="chip" data-msg="How do I cancel my order?" id="chipCancel">❌ Cancel Order</button>
+        <button class="chip" data-msg="How are delivery charges calculated?" id="chipDelivery">🛵 Delivery Charges</button>
+        <button class="chip" data-msg="What payment methods are accepted?" id="chipPayment">💳 Payment Methods</button>
+        <button class="chip chip-ai" data-msg="Explain no-contact delivery" id="chipAI">🤖 Talk to AI</button>
+      </div>
+
+      <!-- Input row -->
+      <div class="input-row">
+        <input
+          type="text"
+          id="chatInput"
+          class="chat-input"
+          placeholder="Ask about your order, refunds, delivery…"
+          autocomplete="off"
+          aria-label="Type your message"
+          maxlength="300"
+        />
+        <button id="sendBtn" class="send-btn" aria-label="Send message">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20" height="20" aria-hidden="true">
+            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+          </svg>
+        </button>
+      </div>
+
+    </div><!-- /chat-container -->
+  </div><!-- /app-wrapper -->
+
+  <script src="script.js"></script>
+</body>
+</html>
