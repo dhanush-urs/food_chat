@@ -26,7 +26,15 @@ FoodFlow Support Bot is a full-stack chatbot inspired by Swiggy/Zomato support f
 | 📦 Order History | Past orders with restaurant, items, amount |
 | 📚 FAQ Engine | 115+ entries, multi-strategy matching |
 | 🤖 Gemini Fallback | AI-generated support responses |
-| 🌱 Data Seeder | One-click demo data creation |
+| 🛒 Dynamic Ordering | Place new orders via intent or UI |
+| ❌ Order Cancellation | Cancel orders with status checks |
+| 💸 Refund Flow | Request refunds and check refund status |
+| 📍 Address Update | Change delivery address before pickup |
+| 🏍️ Rider Info | Get detailed rider and ETA updates |
+| 🔁 Reorder Last | Quickly re-order your last completed meal |
+| 🎫 Coupon Validation | Parse and validate promo codes |
+| 🎫 Support Tickets | Log tickets for missing/damaged items |
+| 🌱 Data Seeder | One-click demo data creation with addresses and refunds |
 | 🎯 Intent Detection | Regex-based order intent routing |
 | 🏷️ Source Badges | FAQ / Firebase / AI labels in UI |
 | 📱 Mobile-Responsive | Works perfectly on all screen sizes |
@@ -41,21 +49,21 @@ User Message
       │
       ▼
 ┌─────────────────────────┐
-│   Intent Detection      │  ← regex patterns on the message
+│   Intent Detection      │  ← regex patterns
 └─────────────┬───────────┘
-              │ order intent?
+              │ 
      ┌────────┴────────┐
-     │ YES             │ NO
-     ▼                 ▼
-┌─────────┐    ┌──────────────┐
-│Firebase │    │  FAQ Engine  │  ← multi-strategy matching
-│Firestore│    │(115+ entries)│
-└─────────┘    └──────┬───────┘
-                      │ no match?
-                      ▼
-               ┌─────────────┐
-               │ Gemini API  │  ← only as last resort
-               └─────────────┘
+ 1. Operational Intent (Place Order, Cancel, Refund, Address change, Ticket)
+      │↳ Execute actions and return structured data (order_created, refund_requested, etc.)
+      │
+ 2. Transational / Tracking Intent
+      │↳ Query Firebase (active, history) & return current status
+      │
+ 3. FAQ Match
+      │↳ Keyword & semantic match with faq_data.json
+      │
+ 4. AI Fallback
+      │↳ Call Gemini via prompt context to resolve the user's issue
 ```
 
 ---
@@ -215,11 +223,33 @@ A match is only returned if the **confidence ≥ 0.35** (configurable in `faq_se
 ### `POST /api/seed-data`
 Seeds 3 users + 12 realistic orders into Firestore.
 
-### `GET /api/orders/{user_id}`
-Returns all orders for a user.
-
-### `GET /api/orders/{user_id}/active`
-Returns the current active order.
+### `POST /api/orders/create`
+Places a new order securely using strict schemas:
+```json
+{
+  "user_id": "user_001",
+  "restaurant_name": "Burger Hub",
+  "payment_method": "UPI",
+  "delivery_address": "Home",
+  "items": [
+    {"name": "Veg Burger", "quantity": 1, "unit_price": 120.0}
+  ]
+}
+```
+### `POST /api/orders/cancel`
+Cancels the active order if eligible.
+### `POST /api/orders/refund`
+Requests a refund for cancelled orders.
+### `GET /api/orders/{user_id}/refund-status`
+Returns the status of recent refunds.
+### `POST /api/orders/update-address`
+Changes the delivery address if rider has not picked it up.
+### `POST /api/orders/reorder-last`
+Clones your last delivered order.
+### `POST /api/support/ticket`
+Creates a support ticket for missing or wrong items.
+### `POST /api/coupons/validate`
+Validates a provided discount code via backend logic.
 
 ### `GET /api/debug/faq-match?query=...`
 Returns FAQ matching debug info — scores for all candidates.
@@ -233,23 +263,28 @@ curl "http://localhost:8000/api/debug/faq-match?query=refund+policy"
 
 1. Open `frontend/index.html`
 2. Click **🌱 Seed Data** (creates Firebase demo data)
-3. Send: `"Track my order"` → See Firebase order status card
-4. Send: `"Show my order history"` → See order history timeline
-5. Send: `"What payment methods are accepted?"` → See FAQ card
-6. Switch to **user_002** → Send `"Where is my order?"`
-7. Send: `"Tell me about surge pricing"` → See Gemini fallback response
+3. Send: `"Place a new order"` → See new order created card
+4. Send: `"Cancel my order"` → See order cancelled state updates
+5. Send: `"Request a refund"` → Generates refund ticket for cancelled orders
+6. Send: `"Reorder my last meal"` → Copies last delivery and re-places
+7. Send: `"My burger is missing"` → Creates a support ticket
+8. Send: `"Track my order"` → See Firebase order status card
+9. Send: `"Show my order history"` → See order history timeline
+10. Send: `"Apply coupon WELCOME"` → Validation result
+11. Switch to **user_002** → Send `"What payment methods are accepted?"` → See FAQ card
+12. Send: `"Tell me about surge pricing"` → See Gemini fallback response
 
 ---
 
 ## 🔮 Future Improvements
 
 - [ ] WebSocket for real-time order push updates
-- [ ] Multi-language support (Hindi, Tamil, etc.)
-- [ ] Voice input integration
+- [x] Multi-language support (Hindi, Tamil, etc.)
+- [x] Voice input integration
 - [ ] Order rating flow in chatbot
 - [ ] Rider location map embed
 - [ ] Backend conversation history with session IDs
-- [ ] Sentiment analysis to detect frustrated users
+- [x] Sentiment analysis to detect frustrated users
 - [ ] Admin dashboard for FAQ management
 - [ ] WhatsApp / Telegram bot integration
 

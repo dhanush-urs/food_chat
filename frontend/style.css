@@ -305,6 +305,10 @@ html, body {
   margin-top: 10px;
   max-width: 420px;
 }
+.highlight-card {
+  background: rgba(139, 92, 246, 0.08);
+  border-color: rgba(139, 92, 246, 0.25);
+}
 .order-card-header {
   display: flex;
   align-items: center;
@@ -593,7 +597,6 @@ html, body {
   color: #C4B5FD;
 }
 
-/* ── Input row ───────────────────────────────────────────── */
 .input-row {
   padding: 14px 16px;
   display: flex;
@@ -602,6 +605,34 @@ html, body {
   border-top: 1px solid var(--border);
   background: rgba(0,0,0,0.2);
   flex-shrink: 0;
+}
+.mic-btn {
+  width: 46px; height: 46px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid var(--border);
+  color: #fff;
+  font-size: 1.2rem;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all var(--transition);
+}
+.mic-btn:hover {
+  background: rgba(255,255,255,0.15);
+  transform: translateY(-2px);
+}
+.mic-btn:active { transform: translateY(0); }
+.mic-btn.recording {
+  background: rgba(255, 77, 109, 0.2);
+  border-color: #FF4D6D;
+  box-shadow: 0 0 16px rgba(255, 77, 109, 0.5);
+  animation: pulseRecording 1.5s infinite;
+}
+@keyframes pulseRecording {
+  0% { box-shadow: 0 0 0 0 rgba(255, 77, 109, 0.5); }
+  70% { box-shadow: 0 0 0 10px rgba(255, 77, 109, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 77, 109, 0); }
 }
 .chat-input {
   flex: 1;
@@ -657,6 +688,40 @@ html, body {
 /* ── Amount highlight ─────────────────────────────────────── */
 strong { font-weight: 700; color: #FFD166; }
 
+/* ── Escalation Card ─────────────────────────────────────── */
+.escalation-card {
+  margin-top: 10px;
+  background: rgba(255, 77, 109, 0.1);
+  border: 1px solid rgba(255, 77, 109, 0.3);
+  border-radius: 12px;
+  padding: 14px;
+}
+.escalation-msg {
+  font-size: 0.95rem;
+  color: #fff;
+  margin-bottom: 12px;
+  line-height: 1.4;
+}
+.spinner-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.85rem;
+  color: #FF4D6D;
+  font-weight: 500;
+}
+.escalation-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 77, 109, 0.3);
+  border-left-color: #FF4D6D;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
 /* ── Responsive ──────────────────────────────────────────── */
 @media (max-width: 600px) {
   .app-wrapper { padding: 0; align-items: flex-start; }
@@ -670,3 +735,80 @@ strong { font-weight: 700; color: #FFD166; }
   .bubble { max-width: 88%; }
   .order-card, .history-card, .faq-card, .gemini-card { max-width: 100%; }
 }
+
+/* ── Modal & Structured Orders ───────────────────────────── */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+}
+.modal-content {
+  background-color: var(--surface-light);
+  margin: 10% auto;
+  padding: 24px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+.close-modal {
+  color: var(--text-muted);
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.close-modal:hover { color: var(--text); }
+.form-group {
+  margin-bottom: 12px;
+}
+.form-group label {
+  display: block;
+  font-size: 0.8rem;
+  margin-bottom: 4px;
+  color: var(--text-muted);
+}
+.form-group input, .form-group select {
+  width: 100%;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  box-sizing: border-box;
+}
+.item-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.item-row input {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  box-sizing: border-box;
+}
+.i-name { flex-grow: 1; }
+.structured-items-list {
+  margin-top: 8px;
+  border-top: 1px dashed var(--border);
+  padding-top: 8px;
+}
+.sit-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  padding: 4px 0;
+}
+.sit-row .sit-name { flex-grow: 1; }
+.sit-row .sit-qty { width: 40px; text-align: center; color: var(--text-muted); }
+.sit-row .sit-price { width: 60px; text-align: right; font-weight: 500; }

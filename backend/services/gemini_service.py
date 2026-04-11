@@ -74,3 +74,39 @@ def ask_gemini(user_message: str) -> Optional[str]:
 def is_gemini_available() -> bool:
     """Quick check: returns True if Gemini is configured and ready."""
     return _get_client() is not None
+
+
+def translate_content(text: str, target_language: str) -> str:
+    """
+    Translates the given text into the target language using Gemini.
+    Preserves bolding, markdown, and emojis.
+    """
+    if target_language.lower() in ("english", "en", ""):
+        return text
+
+    client = _get_client()
+    if client is None:
+        return text  # fallback to original if Gemini is unavailable
+
+    _TRANSLATION_INSTRUCTION = (
+        f"You are a translation engine. Translate the user's text into {target_language}. "
+        "Strictly preserve all numbers, markdown formatting (like **bold**), emojis, and tone. "
+        "Do not add any conversational filler. Only output the translated text."
+    )
+
+    try:
+        from google.genai import types
+
+        response = client.models.generate_content(
+            model=_model_name,
+            contents=text,
+            config=types.GenerateContentConfig(
+                system_instruction=_TRANSLATION_INSTRUCTION,
+                max_output_tokens=300,
+                temperature=0.1,
+            ),
+        )
+        return response.text.strip() if response.text else text
+    except Exception as exc:
+        print(f"[Gemini translation error] {exc}")
+        return text
